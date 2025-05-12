@@ -1,34 +1,54 @@
-from pytube import Channel, YouTube
+import subprocess
 import os
+import sys
 
-# Imposta qui il link al canale
-channel_url = "https://www.youtube.com/@spot80tv"
-
-# Cartelle per video e audio
-video_path = "./video_bassa_qualita/video"
-audio_path = "./video_bassa_qualita/audio"
-
-os.makedirs(video_path, exist_ok=True)
-os.makedirs(audio_path, exist_ok=True)
-
-channel = Channel(channel_url)
-print(f"Scarico {len(channel.video_urls)} video dal canale: {channel.channel_name}")
-
-for url in channel.video_urls:
+def check_yt_dlp():
     try:
-        yt = YouTube(url)
-        safe_title = "".join(c if c.isalnum() else "_" for c in yt.title)[:50]
-        print(f"Scaricando: {yt.title}")
+        subprocess.run(["yt-dlp", "--version"], check=True, stdout=subprocess.DEVNULL)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print("Errore: yt-dlp non è installato. Installalo con:\npip install -U yt-dlp")
+        sys.exit(1)
 
-        # Video solo video
-        video_stream = yt.streams.filter(only_video=True, file_extension='mp4').order_by('resolution').first()
-        if video_stream:
-            video_stream.download(output_path=video_path, filename=f"{safe_title}_video.mp4")
+def download_filtered_content(year):
+    channel_url = "https://www.youtube.com/@spot80tv"
+    video_folder = f"video/{year}"
+    audio_folder = f"audio/{year}/"
 
-        # Solo audio
-        audio_stream = yt.streams.filter(only_audio=True).order_by('abr').desc().first()
-        if audio_stream:
-            audio_stream.download(output_path=audio_path, filename=f"{safe_title}_audio.mp4")
+    os.makedirs(video_folder, exist_ok=True)
+    os.makedirs(audio_folder, exist_ok=True)
 
-    except Exception as e:
-        print(f"Errore con {url}: {e}")
+    title_filter = rf"\({year}\)"  # Esempio: \(1978\)
+
+    print(f"📼 Scarico video con titolo che contiene '({year})'...")
+
+    subprocess.run([
+        "yt-dlp",
+        "-f", "worst[ext=mp4]",
+        "--match-title", title_filter,
+        "--max-downloads", "10",
+        "-o", f"{video_folder}/%(title).50s.%(ext)s",
+        channel_url
+    ])
+
+    print(f"🔊 Scarico audio dei video con titolo '({year})'...")
+
+    subprocess.run([
+        "yt-dlp",
+        "-f", "bestaudio",
+        "-x", "--audio-format", "mp3",
+        "--match-title", title_filter,
+        "--max-downloads", "10",
+        "-o", f"{audio_folder}/%(title).50s.%(ext)s",
+        channel_url
+    ])
+
+    print(f"✅ Download completato per l'anno {year}.")
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("❌ Errore: devi specificare un anno come argomento. Esempio:\n  python crawler.py 1978")
+        sys.exit(1)
+
+    year = sys.argv[1]
+    check_yt_dlp()
+    download_filtered_content(year)

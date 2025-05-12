@@ -12,7 +12,6 @@ Questo progetto è un semplice crawler in Python per scaricare tutti i video di 
 ## Requisiti
 
 - Python 3.8+
-- pytube
 
 ## Installazione
 
