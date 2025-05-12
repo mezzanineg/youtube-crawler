@@ -1,1 +1,5 @@
-pytube
+openai>=1.0.0
+yt-dlp
+pydub
+whisper
+python-dotenv
