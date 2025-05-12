@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.mp4
+video_bassa_qualita/
+.env
+venv/
