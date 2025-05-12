@@ -1,22 +1,23 @@
-# YouTube Crawler
+# YouTube Crawler e Trascrizione Audio
 
-Questo progetto è un semplice crawler in Python per scaricare tutti i video di un canale YouTube, in qualità minima, con audio e video separati.
+Questo progetto è un **crawler YouTube** che estrae i video da un canale e scarica i file audio e video. Inoltre, esegue la **trascrizione automatica** dei file audio in formato `.txt` utilizzando **Whisper di OpenAI**.
 
-## Funzionalità
+## 📝 Funzionalità
 
-- Scarica tutti i video da un canale YouTube
-- Salva video alla qualità più bassa disponibile
-- Scarica anche l'audio separatamente
-- Organizza i file in directory strutturate
+1. **Scaricamento Video e Audio**: scarica i video e audio da un canale YouTube specificato.
+2. **Filtraggio per Titolo**: è possibile scaricare solo i video che contengono una determinata stringa nel titolo (es. `(1978)`).
+3. **Trascrizione Audio**: trascrive automaticamente i file audio `.mp3` in formato testo utilizzando il modello Whisper di OpenAI.
 
-## Requisiti
+## ⚙️ Requisiti
 
-- Python 3.8+
+- Python 3.7 o superiore
+- `yt-dlp` per il download dei video e audio
+- `whisper` per la trascrizione dei file audio
 
-## Installazione
+## 📦 Installazione
 
-1. Clona il repository:
+1. Clona questo repository:
 
-```bash
-git clone https://github.com/tuo-username/youtube-crawler.git
-cd youtube-crawler
+   ```bash
+   git clone https://github.com/mezzanineg/youtube-crawler.git
+   cd youtube-crawler
