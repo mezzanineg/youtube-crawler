@@ -3,3 +3,5 @@ yt-dlp
 pydub
 whisper
 python-dotenv
+pandas 
+openpyxl

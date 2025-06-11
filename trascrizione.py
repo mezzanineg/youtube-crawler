@@ -2,14 +2,14 @@ import subprocess
 import os
 import argparse
 
-def transcribe_audio(file_path, txt_folder, vtt_folder, high_quality):
+def transcribe_audio(file_path, txt_folder, high_quality):
     try:
         file_name = os.path.splitext(os.path.basename(file_path))[0]
 
         base_command = [
             "whisper", file_path,
             "--language", "Italian",
-            "--model", "large" if high_quality else "medium",
+            "--model", "large",
             "--task", "transcribe",
             "--fp16", "False"
         ]
@@ -26,8 +26,8 @@ def transcribe_audio(file_path, txt_folder, vtt_folder, high_quality):
         subprocess.run(txt_command, check=True)
 
         # Genera file .vtt
-        vtt_command = base_command + ["--output_format", "vtt", "--output_dir", vtt_folder]
-        subprocess.run(vtt_command, check=True)
+       # vtt_command = base_command + ["--output_format", "vtt", "--output_dir", vtt_folder]
+        #subprocess.run(vtt_command, check=True)
 
         print(f"✅ Trascrizione completata per: {file_name}")
 
@@ -37,10 +37,10 @@ def transcribe_audio(file_path, txt_folder, vtt_folder, high_quality):
 def process_audio_files(anno, high_quality):
     audio_folder = f"audio/{anno}"
     txt_folder = f"trascrizioni/{anno}/txt"
-    vtt_folder = f"trascrizioni/{anno}/vtt"
+   # vtt_folder = f"trascrizioni/{anno}/vtt"
 
     os.makedirs(txt_folder, exist_ok=True)
-    os.makedirs(vtt_folder, exist_ok=True)
+   # os.makedirs(vtt_folder, exist_ok=True)
 
     audio_files = [f for f in os.listdir(audio_folder) if f.endswith('.mp3')]
 
@@ -52,7 +52,7 @@ def process_audio_files(anno, high_quality):
 
     for audio_file in audio_files:
         audio_path = os.path.join(audio_folder, audio_file)
-        transcribe_audio(audio_path, txt_folder, vtt_folder, high_quality)
+        transcribe_audio(audio_path, txt_folder, high_quality)
 
     print("✅ Tutte le trascrizioni completate.")
 
